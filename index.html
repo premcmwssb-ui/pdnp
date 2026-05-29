@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EB Imprest — Proforma &amp; Expenditure Approval Slip</title>
+  <link rel="stylesheet" href="css/print.css" />
+</head>
+<body>
+
+  <!-- ============================ TOOLBAR (screen only) =================== -->
+  <div class="toolbar no-print">
+    <strong class="brand">EB Imprest · SPS</strong>
+    <button type="button" id="printProforma">Print Proforma</button>
+    <button type="button" id="printExp">Print Approval Slip</button>
+    <button type="button" id="printBoth">Print Both</button>
+    <button type="button" class="ghost" id="saveBtn">Save draft</button>
+    <button type="button" class="ghost" id="clearBtn">Reset</button>
+    <span class="hint">Fill the Input fields → both documents update live → Print / Save as PDF.</span>
+  </div>
+
+  <!-- ============================ INPUT FORM (screen only) ================ -->
+  <form id="inputForm" class="input-panel no-print" autocomplete="off">
+    <h2>Input</h2>
+    <p class="sub">All values below feed the Proforma and the Expenditure Approval Slip.</p>
+
+    <div class="grid2">
+      <label>Station type<input type="text" id="f_type" data-k="type" placeholder="SPS" /></label>
+      <label>Station / Street name<input type="text" id="f_name" data-k="name" placeholder="Thangavelu Street" /></label>
+
+      <label>Imprest No.<input type="text" id="f_imprest" data-k="imprest" placeholder="1" /></label>
+      <label>Area<input type="text" id="f_area" data-k="area" placeholder="IX" /></label>
+
+      <label>Depot<input type="text" id="f_depot" data-k="depot" placeholder="113" /></label>
+      <label>DAE<input type="text" id="f_dae" data-k="dae" placeholder="26" /></label>
+
+      <label class="span2">Work<input type="text" id="f_work" data-k="work" placeholder="Electricity Consumption Charges for" /></label>
+
+      <label>Amount (Rs.)<input type="number" id="f_amount" data-k="amount" step="0.01" min="0" placeholder="17258" /></label>
+      <label>GST %<input type="number" id="f_gst" data-k="gst" step="0.01" min="0" placeholder="0" /></label>
+
+      <label class="span2">Period<input type="text" id="f_period" data-k="period" placeholder="01.04.2026 to 15.04.2026" /></label>
+
+      <label class="span2">Contractor / Payable to<input type="text" id="f_contractor" data-k="contractor" placeholder="SE/CEDC/CENTRAL" /></label>
+
+      <label>Invoice No.<input type="text" id="f_invoice" data-k="invoice" placeholder="           / 2024-25" /></label>
+      <label>Invoice Date<input type="text" id="f_invdate" data-k="invdate" placeholder="15.04.2026" /></label>
+
+      <label>Code<input type="text" id="f_code" data-k="code" placeholder="2910" /></label>
+      <label>Slip No.<input type="text" id="f_slipno" data-k="slipno" placeholder="" /></label>
+    </div>
+  </form>
+
+  <!-- =========================================================================
+       DOCUMENT 1 — PROFORMA  (prints on its own A4 page)
+       ====================================================================== -->
+  <section class="page proforma" id="proforma">
+    <h1 class="cmwssb">C.M.W.S.S.B.</h1>
+    <h2 class="doc-title">PROFORMA FOR PAYMENT / REIMBURSEMENT OF EXPENDITURE</h2>
+
+    <ol class="pf-list">
+      <li><span class="lbl">Area</span><span class="col">:</span><span class="val" data-o="area"></span></li>
+      <li><span class="lbl">Section</span><span class="col">:</span><span class="val" data-o="section"></span></li>
+      <li><span class="lbl">Name of Work</span><span class="col">:</span><span class="val just" data-o="nameOfWork"></span></li>
+      <li><span class="lbl">Date of Work</span><span class="col">:</span><span class="val" data-o="period"></span></li>
+      <li><span class="lbl">Cost of Work</span><span class="col">:</span><span class="val">Rs.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span data-o="cost"></span></span></li>
+      <li><span class="lbl">Whether estimate / bill enclosed</span><span class="col">:</span><span class="val">Enclosed</span></li>
+      <li><span class="lbl">Name of Contractor</span><span class="col">:</span><span class="val" data-o="contractor"></span></li>
+      <li><span class="lbl">Expenditure incurred by</span><span class="col">:</span><span class="val" data-o="contractor"></span></li>
+      <li><span class="lbl">Necessity of Work</span><span class="col">:</span><span class="val">Electricity Consumption Charges</span></li>
+      <li><span class="lbl">Certificate of AE</span><span class="col">:</span><span class="val">Work completed satisfactorily</span></li>
+    </ol>
+
+    <p class="pf-para">
+      Approval of Area Engineer is requested to ratify the action taken and for the payment
+      <span data-o="reimburse"></span>
+    </p>
+
+    <div class="sign3">
+      <div class="s" data-o="ae"></div>
+      <div class="s" data-o="dae"></div>
+      <div class="s" data-o="areaEng"></div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       DOCUMENT 2 — EXPENDITURE APPROVAL SLIP (Form No. 151)
+       ====================================================================== -->
+  <section class="page exp" id="exp">
+    <div class="exp-head">
+      <div class="l1">CHENNAI METROPOLITAN WATER SUPPLY AND SEWERAGE BOARD</div>
+      <div class="l2">AREA-<span data-o="area2"></span></div>
+      <div class="l3">EXPENDITURE APPROVAL SLIP</div>
+    </div>
+
+    <div class="exp-formrow">
+      <span class="form-no">FORM No.: 151</span>
+      <span class="slip-no">No: <span data-o="slipno"></span></span>
+    </div>
+
+    <table class="exp-info">
+      <tr>
+        <td class="k">DEPARTMENT</td>
+        <td class="c">:</td>
+        <td class="v" colspan="4" data-o="dept"></td>
+      </tr>
+      <tr>
+        <td class="k">Main</td><td class="c">:</td><td class="v"></td>
+        <td class="k2"></td><td class="c"></td><td class="v"></td>
+      </tr>
+      <tr>
+        <td class="k">Account</td><td class="c">:</td><td class="v"></td>
+        <td class="k2">Description</td><td class="c">:</td><td class="v"></td>
+      </tr>
+      <tr>
+        <td class="k">Budget</td><td class="c">:</td><td class="v"></td>
+        <td class="k2"></td><td class="c"></td><td class="v"></td>
+      </tr>
+      <tr>
+        <td class="k">Centre</td><td class="c">:</td><td class="v"></td>
+        <td class="k2">Description</td><td class="c">:</td><td class="v" data-o="codeLabel"></td>
+      </tr>
+    </table>
+
+    <table class="exp-table">
+      <colgroup>
+        <col class="t-sl" /><col class="t-desc" /><col class="t-est" /><col class="t-act" />
+      </colgroup>
+      <thead>
+        <tr>
+          <th rowspan="2">Sl. No.</th>
+          <th rowspan="2">Description of Service Required</th>
+          <th>Estimate</th>
+          <th>Actuals</th>
+        </tr>
+        <tr><th class="sub">Rs.&nbsp;&nbsp;&nbsp;&nbsp;P.</th><th class="sub">Rs.&nbsp;&nbsp;&nbsp;&nbsp;P.</th></tr>
+      </thead>
+      <tbody>
+        <tr class="r-main">
+          <td class="ctr">1</td>
+          <td class="just" data-o="nameOfWork"></td>
+          <td class="num" data-o="cost"></td>
+          <td class="num" data-o="cost"></td>
+        </tr>
+        <tr class="r-gst">
+          <td></td>
+          <td class="ctr bold" data-o="gstLabel"></td>
+          <td class="num" data-o="gstAmt"></td>
+          <td class="num" data-o="gstAmt"></td>
+        </tr>
+        <tr class="r-blank"><td></td><td></td><td></td><td></td></tr>
+        <tr class="r-total">
+          <td></td>
+          <td class="ctr">TOTAL</td>
+          <td></td>
+          <td class="num" data-o="total"></td>
+        </tr>
+        <tr class="r-say">
+          <td></td><td></td>
+          <td class="ctr bold">Say</td>
+          <td class="num" data-o="say"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="exp-approve">
+      <span class="prep">Prepared By:</span>
+      <span class="appr">Approved By :</span>
+    </div>
+
+    <div class="sign3 exp-sign">
+      <div class="s" data-o="ae"></div>
+      <div class="s" data-o="dae"></div>
+      <div class="s" data-o="areaEng"></div>
+    </div>
+
+    <div class="exp-foot">
+      <div class="payable" data-o="payable"></div>
+      <div class="cert-box">
+        <div class="cert-title">CERTIFICATE</div>
+        <div class="cert-text">I Certify that the services are rendered to my satisfaction and approve the expenditure mentioned above.</div>
+      </div>
+    </div>
+
+    <div class="exp-refs">
+      <div>S.O. / P.O.REF:</div>
+      <div>BILL / CLAIM REF.: Enclosed</div>
+      <div>MODE OF PAYMENT: RTGS</div>
+    </div>
+
+    <div class="sign2">
+      <div class="s" data-o="ae"></div>
+      <div class="s" data-o="dae"></div>
+    </div>
+  </section>
+
+  <script src="js/form.js"></script>
+</body>
+</html>

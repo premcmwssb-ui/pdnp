@@ -1,0 +1,277 @@
+/* =========================================================================
+   EB Imprest (SPS) — Proforma + Expenditure Approval Slip
+   Reproduces the source workbook's Arial typography, sizes, borders and
+   alignment. On screen: an Input panel + live document previews.
+   On print / Save-as-PDF: only the two documents, each on its own A4 page,
+   styled to match the original printed sheets.
+   ========================================================================= */
+
+:root {
+  --font: Arial, "Liberation Sans", "Helvetica Neue", Helvetica, sans-serif;
+  --ink: #000;
+  --ui: "Segoe UI", Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #e9e9ee;
+  font-family: var(--font);
+  color: var(--ink);
+  font-size: 11pt;
+}
+
+/* ----------------------------------------------------------------- toolbar */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: #fff;
+  border-bottom: 1px solid #c9c9d2;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  font-family: var(--ui);
+}
+.toolbar .brand { margin-right: 8px; color: #1f3a93; }
+.toolbar button {
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 13px;
+  border: 1px solid #2f5bd0;
+  border-radius: 6px;
+  background: #2f5bd0;
+  color: #fff;
+  cursor: pointer;
+}
+.toolbar button.ghost { background: #fff; color: #2f5bd0; }
+.toolbar button:hover { filter: brightness(0.96); }
+.toolbar .hint { font-size: 12px; color: #555; }
+
+/* ------------------------------------------------------------- input panel */
+.input-panel {
+  max-width: 900px;
+  margin: 18px auto 4px;
+  padding: 18px 22px;
+  background: #fff;
+  border: 1px solid #d4d4dd;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  font-family: var(--ui);
+}
+.input-panel h2 { margin: 0 0 2px; font-size: 18px; color: #1f3a93; }
+.input-panel .sub { margin: 0 0 14px; font-size: 12px; color: #666; }
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 18px;
+}
+.grid2 label {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  color: #333;
+  gap: 4px;
+}
+.grid2 label.span2 { grid-column: 1 / -1; }
+.grid2 input {
+  font: inherit;
+  font-size: 13px;
+  padding: 7px 9px;
+  border: 1px solid #c2c7d6;
+  border-radius: 6px;
+  background: #fbfcff;
+}
+.grid2 input:focus { outline: 2px solid #9bb3ff; border-color: #9bb3ff; }
+
+/* --------------------------------------------------------------- the pages */
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 18px auto;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18);
+  font-family: var(--font);
+  color: #000;
+}
+.proforma { padding: 25mm 12mm 25mm 14mm; }   /* T B / R L ~ workbook margins */
+.exp      { padding: 25mm 18mm; }
+
+/* ============================== PROFORMA ================================= */
+.cmwssb {
+  text-align: center;
+  font-size: 20pt;
+  font-weight: 700;
+  margin: 0 0 14pt;
+  letter-spacing: 0.5px;
+}
+.doc-title {
+  text-align: center;
+  font-size: 11pt;
+  font-weight: 700;
+  text-decoration: underline;
+  margin: 0 0 22pt;
+}
+.pf-list {
+  list-style: none;
+  counter-reset: item;
+  margin: 0;
+  padding: 0;
+  font-size: 11pt;
+}
+.pf-list li {
+  counter-increment: item;
+  display: flex;
+  align-items: baseline;
+  margin-bottom: 12pt;
+}
+.pf-list li::before {
+  content: counter(item) ".";
+  width: 26pt;
+  flex: 0 0 26pt;
+}
+.pf-list .lbl { flex: 0 0 200pt; }
+.pf-list .col { flex: 0 0 12pt; }
+.pf-list .val { flex: 1 1 auto; }
+.pf-list .val.just { text-align: justify; }
+.pf-para {
+  font-size: 11pt;
+  text-align: justify;
+  text-indent: 28pt;
+  margin: 18pt 0 0;
+  line-height: 1.5;
+}
+.sign3 {
+  display: flex;
+  justify-content: space-between;
+  gap: 10pt;
+  margin-top: 60pt;
+  font-size: 11pt;
+  font-weight: 700;
+}
+.sign3 .s { flex: 1 1 0; text-align: center; }
+
+/* ===================== EXPENDITURE APPROVAL SLIP ======================== */
+.exp-head { text-align: center; margin-bottom: 10pt; }
+.exp-head .l1 { font-size: 11pt; font-weight: 700; }
+.exp-head .l2 { font-size: 12pt; font-weight: 700; margin-top: 2pt; }
+.exp-head .l3 { font-size: 11pt; font-weight: 700; margin-top: 2pt; }
+
+.exp-formrow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10pt;
+  font-weight: 700;
+  margin: 6pt 0 4pt;
+}
+
+.exp-info {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10pt;
+  font-weight: 700;
+  margin-bottom: 6pt;
+}
+.exp-info td { padding: 2pt 3pt; vertical-align: top; }
+.exp-info .k  { width: 70pt; white-space: nowrap; }
+.exp-info .k2 { width: 70pt; white-space: nowrap; }
+.exp-info .c  { width: 8pt; }
+.exp-info .v  { border-bottom: none; }
+
+.exp-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 11pt;
+}
+.exp-table th,
+.exp-table td {
+  border: 1px solid #000;
+  padding: 3pt 4pt;
+  vertical-align: middle;
+}
+.exp-table thead th {
+  font-size: 10pt;
+  font-weight: 700;
+  text-align: center;
+}
+.exp-table thead th.sub { font-size: 9pt; }
+.t-sl   { width: 12%; }
+.t-desc { width: 56%; }
+.t-est  { width: 16%; }
+.t-act  { width: 16%; }
+.exp-table .ctr  { text-align: center; }
+.exp-table .num  { text-align: center; }
+.exp-table .just { text-align: justify; }
+.exp-table .bold { font-weight: 700; }
+.exp-table .r-main td { height: 56pt; vertical-align: top; }
+.exp-table .r-blank td { height: 18pt; }
+
+.exp-approve {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10pt;
+  margin-top: 26pt;
+}
+.exp-sign { margin-top: 14pt; font-size: 10pt; }
+
+.exp-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 16pt;
+  border-top: 1px solid #000;
+  padding-top: 6pt;
+  margin-top: 10pt;
+}
+.exp-foot .payable { font-size: 10pt; font-weight: 700; flex: 1 1 50%; }
+.exp-foot .cert-box { flex: 1 1 45%; }
+.exp-foot .cert-title {
+  font-size: 10pt;
+  font-weight: 700;
+  text-decoration: underline;
+  text-align: center;
+  margin-bottom: 3pt;
+}
+.exp-foot .cert-text { font-size: 10pt; text-align: justify; }
+
+.exp-refs { font-size: 10pt; margin-top: 10pt; line-height: 1.9; }
+
+.sign2 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10pt;
+  font-weight: 700;
+  margin-top: 28pt;
+  padding: 0 20pt;
+}
+
+/* =========================================================================
+   PRINT — only the documents, each on its own A4 page.
+   ========================================================================= */
+@page { size: A4 portrait; margin: 0; }
+
+@media print {
+  html, body { background: #fff; }
+  .no-print { display: none !important; }
+
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 0;
+    box-shadow: none;
+    page-break-after: always;
+    break-after: page;
+  }
+  .page:last-of-type { page-break-after: auto; break-after: auto; }
+
+  /* keep tables and signature blocks intact across page boundaries */
+  table, tr, td, th { page-break-inside: avoid; }
+
+  /* When a single document is requested, the other is hidden via .print-hide */
+  .print-hide { display: none !important; }
+}

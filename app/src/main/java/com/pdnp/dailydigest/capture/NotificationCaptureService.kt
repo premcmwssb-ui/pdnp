@@ -30,6 +30,10 @@ class NotificationCaptureService : NotificationListenerService() {
             else -> return
         }
 
+        // When the Gmail API account is connected, it supplies full emails —
+        // skip notification-based Gmail capture to avoid duplicates.
+        if (source == "GMAIL" && GmailImporter.isConnected(applicationContext)) return
+
         val notification = sbn.notification ?: return
         // Skip group-summary notifications ("5 new messages")
         if (notification.flags and Notification.FLAG_GROUP_SUMMARY != 0) return

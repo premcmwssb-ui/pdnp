@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.pdnp.dailydigest.capture.CallLogImporter
+import com.pdnp.dailydigest.capture.GmailImporter
 import com.pdnp.dailydigest.capture.SmsImporter
 import com.pdnp.dailydigest.data.AppDatabase
 import com.pdnp.dailydigest.data.Meeting
@@ -64,6 +65,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
                 withContext(Dispatchers.IO) {
                     SmsImporter.import(context)
                     CallLogImporter.import(context)
+                    GmailImporter.import(context)
                     SummaryGenerator.generate(context, selectedDay.value.toString(), useAi)
                 }
             } finally {

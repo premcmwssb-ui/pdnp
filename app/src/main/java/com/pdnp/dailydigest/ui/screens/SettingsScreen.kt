@@ -2,6 +2,8 @@ package com.pdnp.dailydigest.ui.screens
 
 import android.content.Intent
 import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,6 +31,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationManagerCompat
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.pdnp.dailydigest.capture.GmailImporter
 import com.pdnp.dailydigest.data.Prefs
 
 @Composable
@@ -68,6 +74,9 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
                 }
             }
         }
+
+        Spacer(Modifier.height(12.dp))
+        GmailAccountCard()
 
         Spacer(Modifier.height(12.dp))
         Card(Modifier.fillMaxWidth()) {
@@ -131,5 +140,59 @@ fun SettingsScreen(modifier: Modifier = Modifier) {
             }
         }
         Spacer(Modifier.height(24.dp))
+    }
+}
+
+@Composable
+private fun GmailAccountCard() {
+    val context = LocalContext.current
+    var connectedEmail by remember { mutableStateOf(GmailImporter.connectedEmail(context)) }
+
+    fun signInClient(): GoogleSignInClient {
+        val options = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestScopes(GmailImporter.READONLY_SCOPE)
+            .build()
+        return GoogleSignIn.getClient(context, options)
+    }
+
+    val signInLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        connectedEmail = try {
+            GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                .getResult(Exception::class.java)?.email
+        } catch (e: Exception) {
+            null
+        } ?: GmailImporter.connectedEmail(context)
+    }
+
+    Card(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp)) {
+            Text("Gmail sync (recommended)", style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(4.dp))
+            Text(
+                if (connectedEmail != null)
+                    "Connected: $connectedEmail ✓\nFull emails (subject + body) sync via the " +
+                        "official Gmail API, including recent history."
+                else
+                    "Connect your Google account to sync full emails via the official Gmail API " +
+                        "(read-only). Without it, Gmail is captured from notification previews only.",
+                style = MaterialTheme.typography.bodySmall
+            )
+            Spacer(Modifier.height(8.dp))
+            if (connectedEmail == null) {
+                Button(onClick = { signInLauncher.launch(signInClient().signInIntent) }) {
+                    Text("Connect Google account")
+                }
+            } else {
+                Button(onClick = {
+                    signInClient().signOut()
+                    connectedEmail = null
+                }) {
+                    Text("Disconnect")
+                }
+            }
+        }
     }
 }

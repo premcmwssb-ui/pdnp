@@ -7,6 +7,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.pdnp.dailydigest.capture.CallLogImporter
+import com.pdnp.dailydigest.capture.GmailImporter
 import com.pdnp.dailydigest.capture.SmsImporter
 import com.pdnp.dailydigest.data.DayKeys
 import com.pdnp.dailydigest.data.Prefs
@@ -26,6 +27,7 @@ class DailySyncWorker(context: Context, params: WorkerParameters) :
         return try {
             SmsImporter.import(context)
             CallLogImporter.import(context)
+            GmailImporter.import(context)
 
             val useAi = Prefs.aiEnabled(context)
             SummaryGenerator.generate(context, DayKeys.yesterday(), useAi)

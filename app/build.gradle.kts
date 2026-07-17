@@ -73,4 +73,13 @@ dependencies {
 
     // Claude API (optional AI daily summaries) — official Anthropic Java SDK
     implementation("com.anthropic:anthropic-java:2.34.0")
+
+    // Gmail API (full email sync via OAuth)
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
+    implementation("com.google.api-client:google-api-client-android:2.9.0") {
+        exclude(group = "org.apache.httpcomponents")
+    }
+    implementation("com.google.apis:google-api-services-gmail:v1-rev20260525-2.0.0") {
+        exclude(group = "org.apache.httpcomponents")
+    }
 }
